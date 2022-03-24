@@ -24,6 +24,8 @@ typedef struct _BookList {
 	 unsigned int length; // number of elements in the (Book*) List 
 }BookList;
 
+BookList *booklist;
+Book *book, *head, *end;
 
 //saves the database of books in the specified file
 //returns 0 if books were stored correctly, or an error code otherwise

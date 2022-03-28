@@ -1,0 +1,42 @@
+1
+Harry Potter and the Philosopher’s Stone
+J.K. Rowling
+1997
+100
+
+2
+Harry Potter and the Chamber of Secrets
+J.K. Rowling
+1998
+100
+
+3
+Harry Potter and the Prisoner of Azkaban
+J.K. Rowling
+1999
+100
+
+4
+Harry Potter and the Goblet of Fire
+J.K. Rowling
+2000
+100
+
+5
+Harry Potter and the Order of the Phoenix
+J.K. Rowling
+2003
+100
+
+6
+Harry Potter and the Half-Blood Prince
+J.K. Rowling
+2005
+100
+
+7
+Harry Potter and the Deathly Hallows
+J.K. Rowling
+2008
+100
+

@@ -3,7 +3,7 @@
 
 #include "book_management.h"
 BookList *booklist;
-Book *node, *head, *end, *tit, *au, *ye;
+Book *node, *head, *end;
 Bookin *h, *e, *n;
 
 int initlist(){
@@ -46,7 +46,6 @@ int load_books(FILE *file)
 		fscanf(file, "\n");
 		fscanf(file, "%d", &node->copies);
 		fscanf(file, "\n");
-		printf("%-3d\t%-45s\t%-20s\t%-4d\t%-6d\n", node->id, node->title, node->authors, node->year, node->copies);
 		booklist->length++;
 		end->next = node;
 		end = node;
@@ -57,7 +56,20 @@ int load_books(FILE *file)
 	return 0;
 }
 
-int loadbookin(Book *load, FILE *file){
+int showbooks(){
+	Book *show;
+	show = (Book*)malloc(sizeof(Book));
+	show = head;
+	while(show->next != NULL){
+		show = show->next;
+		if(show->copies != 0){
+			printf("%-3d\t%-45s\t%-20s\t%-4d\t%-6d\n", show->id, show->title, show->authors, show->year, show->copies);
+		}
+	}
+	return 0;
+}
+
+int loadstorebookin(Book *load, FILE *file){
 	h = (Bookin*)malloc(sizeof(Bookin));
 	e = (Bookin*)malloc(sizeof(Bookin));
 	h = e;
@@ -81,19 +93,21 @@ Book enter()
 {
 	Book enterbook;
 	char str[100];
-	int i = 0, j = 0;
-	printf("Please enter the title:");
+	int i = 0;
+	printf("\nPlease enter the title: ");
 	enterbook.title = (char*)malloc(10*sizeof(enterbook.title));
 	scanf("%[^\n]", enterbook.title);
-
-	printf("Please enter the author:");
 	getchar();
+
+	printf("Please enter the author: ");
 	enterbook.authors = (char*)malloc(10*sizeof(enterbook.authors));
 	scanf("%[^\n]", enterbook.authors);
+	getchar();
 
 	enterbook.year = 0;
-	printf("Please enter the year:");
-	scanf("%s", str);
+	printf("Please enter the year: ");
+	scanf("%[^\n]", str);
+	getchar();
 	while(str[i]!='\0'){
 		if(str[i]>='0'&&str[i]<='9'){
 			enterbook.year=enterbook.year*10+(str[i]-'0');
@@ -104,7 +118,6 @@ Book enter()
 			break;
 		}
 	}
-	getchar();
 	enterbook.id = booklist->length+1;
 	return enterbook;
 }
@@ -112,7 +125,7 @@ Book enter()
 int add_book(Book book)
 {
 	char cop[100];
-	int i = 0, j = 0;
+	int i = 0;
 	Book *b;
 	node = (Book*)malloc(sizeof(Book));
 	b = (Book*)malloc(sizeof(Book));
@@ -126,8 +139,8 @@ int add_book(Book book)
 	node->year = book.year;
 
 	node->copies = 0;
-	printf("Please enter the copies the library has:");
-	scanf("%s", cop);
+	printf("Please enter the copies the library has: ");
+	scanf("%[^\n]", cop);
 	while(cop[i]!='\0'){
 		if(cop[i]>='0'&&cop[i]<='9'){
 			node->copies=node->copies*10+(cop[i]-'0');
@@ -135,11 +148,13 @@ int add_book(Book book)
 		}
 		else{
 			node->copies = 0;
+			break;
 		}
 	}
 	getchar();
 	if(!(node->year>0 && node->year<2022) || !(node->copies>0)){
 		printf("Sorry, you attempted to add an invalid book, please try again.\n");
+		return 1;
 	}
 
 	while(b->next != NULL){
@@ -215,19 +230,26 @@ int remove_book(Book book){
 
 BookList find_book_by_title (const char *title){
 	BookList t;
-	Book *tit;
+	Book *tit, *hd, *ed, *go;
 	int k = 1;
-	tit = t.list;
+	t.length = 0;
+	hd = (Book*)malloc(sizeof(Book));
+	go = (Book*)malloc(sizeof(Book));
+	ed = hd;
 	tit = (Book*)malloc(sizeof(Book));
 	tit = head;
 	while(tit->next != NULL){
 		tit = tit->next;
 		if(!strcmp(tit->title, title)){
-			t.length++;
 			k = 0;
-			printf("%-3d\t%-45s\t%-20s\t%-4d\t%-6d\n", tit->id, tit->title, tit->authors, tit->year, tit->copies);
+			go = tit;
+			t.length++;
+			ed->next = go;
+			ed = go;
+			go = (Book*)malloc(sizeof(Book));
 		}
 	}
+	t.list = hd;
 	if(k){
 		printf("This book doesn't exists.\n");
 	}
@@ -236,19 +258,27 @@ BookList find_book_by_title (const char *title){
 
 BookList find_book_by_author (const char *author){
 	BookList a;
-	Book *au;
+	Book *au, *hd, *ed, *go;
 	int k = 1;
-	au = a.list;
+	a.length = 0;
+	hd = (Book*)malloc(sizeof(Book));
+	go = (Book*)malloc(sizeof(Book));
+	// ed = (Book*)malloc(sizeof(Book));
+	ed = hd;
 	au = (Book*)malloc(sizeof(Book));
 	au = head;
 	while(au->next != NULL){
 		au = au->next;
 		if(!strcmp(au->authors, author)){
 			k = 0;
+			go = au;
 			a.length++;
-			printf("%-3d\t%-45s\t%-20s\t%-4d\t%-6d\n", au->id, au->title, au->authors, au->year, au->copies);
+			ed->next = go;
+			ed = go;
+			go = (Book*)malloc(sizeof(Book));
 		}
 	}
+	a.list = hd;
 	if(k){
 		printf("This author doesn't exists.\n");
 	}
@@ -257,71 +287,44 @@ BookList find_book_by_author (const char *author){
 
 BookList find_book_by_year (unsigned int year){
 	BookList y;
-	Book *ye;
+	Book *ye, *hd, *ed, *go;
 	int k = 1;
-	ye = y.list;
+	y.length = 0;
+	hd = (Book*)malloc(sizeof(Book));
+	go = (Book*)malloc(sizeof(Book));
+	// ed = (Book*)malloc(sizeof(Book));
+	ed = hd;
 	ye = (Book*)malloc(sizeof(Book));
 	ye = head;
 	while(ye->next != NULL){
 		ye = ye->next;
 		if(ye->year == year){
 			k = 0;
+			go = ye;
 			y.length++;
-			printf("%-3d\t%-45s\t%-20s\t%-4d\t%-6d\n", ye->id, ye->title, ye->authors, ye->year, ye->copies);
+			ed->next = go;
+			ed = go;
+			go = (Book*)malloc(sizeof(Book));
 		}
 	}
+	y.list = hd;
 	if(k){
 		printf("There are no books published this year.\n");
 	}
 	return y;
 }
-int main(){
-	char *title, *author;
-	char yy[20];
-	int year = 0, i = 0, j = 0;
-	title = (char*)malloc(10*sizeof(title));
-	author = (char*)malloc(10*sizeof(author));
-  if ((fopen("books.txt", "r")) == NULL)
-  {
-    printf("Error\nBook file does not exist\n");
-    exit(1);
-  }
-	FILE *fpr = fopen("books.txt", "r");
-	printf("ID \tTitle                                        \tAuthors             \tyear\tcopies\n");
-  load_books(fpr);
-	FILE *fpb = fopen("bookin.txt", "w");
-	loadstorebookin(load, fpb);
-	printf("\n");
-	fclose(fpb);
-	fclose(fpr);
 
-	add_book(enter());
-	remove_book(enter());
-
-	printf("Please enter the title you want to find:");
-	scanf("%s", title);
-	printf("ID \tTitle                                        \tAuthors             \tyear\tcopies\n");
-  find_book_by_title (title);
-	printf("Please enter the author you want to find:");
-	scanf("%s", author);
-	printf("ID \tTitle                                        \tAuthors             \tyear\tcopies\n");
-  find_book_by_author (author);
-	printf("Please enter the year of the book you want to find:");
-	scanf("%s", yy);
-	while(yy[i]!='\0' || !(year>0 && year<2022)){
-		if(yy[i]>='0'&&yy[i]<='9'){
-			year=year*10+(yy[i]-'0');
-			i++;
-		}
-		else{
-			year = 0;
-		}
+void showfind(BookList blist){
+	BookList go;
+	go.list = (Book*)malloc(sizeof(Book));
+	if(blist.length == 0){
+		return;
 	}
-	printf("ID \tTitle                                        \tAuthors             \tyear\tcopies\n");
-  find_book_by_year(year);
-
-	FILE *fpw = fopen("book.txt", "w");
-	store_books(fpw);
-	fclose(fpw);
-	return 0;
+	go.list = blist.list;
+	printf("\nID \tTitle                                        \tAuthors             \tyear\tcopies\n");
+	for(int i=0; i<blist.length; i++){
+		go.list = go.list->next;
+		printf("%-3d\t%-45s\t%-20s\t%-4d\t%-6d\n", go.list->id, go.list->title, go.list->authors, go.list->year, go.list->copies);
+	}
+	return;
 }

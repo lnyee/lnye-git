@@ -2,13 +2,9 @@
 #include<stdlib.h>
 #include <string.h>
 
-#include "1.h"
+#include "book_management.h"
 #include "homepage.h"
-// typedef struct _User {
-// 		char *username;
-// 		char *password;
-// 		struct _User *next;
-// }User;
+#include "CLI.h"
 
 User *load_users(FILE *file)
 {
@@ -21,6 +17,7 @@ User *load_users(FILE *file)
 	{
 		node->password = (char*)malloc(10*sizeof(node->password));
 		fscanf(file, "%[^\r\n]%*[\r\n]", node->password);
+		fscanf(file, "\n");
 		end->next = node;
 		end = node;
 		node = (User*)malloc(sizeof(User));
@@ -53,11 +50,13 @@ int registeruser(User *head){
 	temp = head;
 	node = (User*)malloc(sizeof(User));
 	node->username = (char*)malloc(10*sizeof(node->username));
-	printf("Please enter a user name:");
-	scanf("%s", node->username);
+	printf("\nPlease enter a user name: ");
+	scanf("%[^\n]", node->username);
+	getchar();
 	node->password = (char*)malloc(10*sizeof(node->password));
-	printf("Please enter a password:");
-	scanf("%s", node->password);
+	printf("Please enter a password: ");
+	scanf("%[^\n]", node->password);
+	getchar();
 
 	while(temp->next != NULL){
 		temp = temp->next;
@@ -83,20 +82,24 @@ User *login(User *head){
 	temp = head;
 	char *username, *password;
 	username = (char*)malloc(20*sizeof(char));
-	printf("Please enter your user name:");
-	scanf("%s", username);
+	printf("Please enter your user name: ");
+	scanf("%[^\n]", username);
+	getchar();
 	while(temp->next != NULL){
 		temp = temp->next;
 		if(!strcmp(temp->username, username)){
 			password = (char*)malloc(20*sizeof(char));
-			printf("Please enter your password:");
-			scanf("%s", password);
+			printf("Please enter your password: ");
+			scanf("%[^\n]", password);
 			if(!strcmp(temp->password, password)){
-				printf("\n(logged in as: %s)\n", username);
-				// if(!strcmp(username, 'library')){
-				// 	LibraryCLI();
-				// }
-				return temp;
+				printf("\n(logged in as: %s)", username);
+				if(!strcmp(username, "librarian")){
+					LibrarianCLI();
+					return head;
+				}
+				else{
+					return temp;
+				}
 			}
 			else{
 				printf("Password error, please try again.\n");
@@ -128,7 +131,7 @@ void borrowBook(User *theUser, User *head, Book *book, int numBooks){
 	}
 	else{
 		int choice;
-		printf("Which book?(number)");
+		printf("Which book?(number): ");
 		scanf("%d",&choice);
 		getchar();
 		if(choice<0||choice>numBooks)
@@ -151,14 +154,14 @@ void borrowBook(User *theUser, User *head, Book *book, int numBooks){
   return; 
 }
 
-void listMyBooks( User *theUser, Book *bookList) {
+void listMyBooks( User *theUser) {
 	int i;
-	if(theUser->numborrowed > 0){
+	if(theUser->numborrowed != 0){
 		printf("\nID \tTitle                                        \tAuthors             \tyear\tcopies\n");
 	}
 	for(i=0;i<theUser->numborrowed;i++)
 	{
-	printf("%-3d\t%-45s\t%-20s\t%-4d\n", theUser->borrowed[i]->id, theUser->borrowed[i]->title,theUser->borrowed[i]->authors, theUser->borrowed[i]->year);
+	printf("%-3d\t%-45s\t%-20s\t%-4d\n", theUser->Borrowed[i]->id, theUser->Borrowed[i]->title,theUser->Borrowed[i]->authors, theUser->Borrowed[i]->year);
 	}
 
   return;
@@ -172,14 +175,14 @@ void returnBook(User *theUser, Book *book, int numBooks) {
 	else
 	{
 		int choice, i = 0, k = 0;
-		printf("Which book? (number):");
+		printf("Which book? (number): ");
 		scanf("%d",&choice);
 		getchar();
 		for(i=0; i<theUser->numborrowed; i++){
 			if(choice != theUser->Borrowed[i]->id)
 			{
 				k++;
-				if(k = theUser->numborrowed){
+				if(k == theUser->numborrowed){
 					printf("Error\nInvalid choice\n");
 					return;
 				}
@@ -188,29 +191,16 @@ void returnBook(User *theUser, Book *book, int numBooks) {
 				break;
 			}
 		}
-		theUser -> Borrowed[i] -> copies++;
-		for(i;(i+1)<theUser->numBorrowed;i++)
+		for(i=i;(i+1)<theUser->numborrowed;i++)
 		{
 			theUser->Borrowed[i] = theUser->Borrowed[i+1];
 		}
-		theUser->numBorrowed--;
-		theUser->borrowed[theUser->numBorrowed] = NULL;
+		theUser->numborrowed--;
+		theUser->Borrowed[theUser->numborrowed] = NULL;
+		for(int i = 0; i<choice; i++){
+			book = book->next;
+		}
+		book->copies++;
 	}
 	return;
 }
-
-// int main(){
-// 	User *user;
-// 	user = (User*)malloc(sizeof(User));
-//   	FILE *fp = fopen("user.txt", "r");
-//   	if(fp == NULL){
-//   		printf("!");
-//   	}
-// 	user = load_users(fp);
-// 	fclose(fp);
-// 	registeruser(user);
-//   	FILE *fpw = fopen("user.txt", "w");
-// 	store_users(fpw, user);
-// 	listAvailableBooks(head);
-// 	borrowBook(login(user), head, booklist->length);
-// }

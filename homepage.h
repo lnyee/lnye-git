@@ -17,3 +17,7 @@ User *login(User *head);
 void listAvailableBooks(Book *book);
 
 void borrowBook(User *theUser, User *head, Book *book, int numBooks);
+
+void listMyBooks( User *theUser);
+
+void returnBook(User *theUser, Book *book, int numBooks);

@@ -11,7 +11,7 @@
 
 
 typedef struct _Book {
-	    unsigned int id; //Book ID
+    unsigned int id; //Book ID
 		char *title; //book title
 		char *authors; //comma separated list of authors
 		unsigned int year; // year of publication
@@ -23,14 +23,6 @@ typedef struct _BookList {
 	 Book* list; // pointer to a list of struct Book.
 	 unsigned int length; // number of elements in the (Book*) List 
 }BookList;
-
-typedef struct _User {
-	char *username;
-	char *password;
-	Book *Borrowed[4];
-	int numborrowed;
-	struct _User *next;
-}User;
 
 typedef struct _Bookin {
 	unsigned int id;
@@ -75,6 +67,8 @@ BookList find_book_by_year (unsigned int year);
 
 Book enter();
 int initlist();
-int loadbookin(Book *load, File *file);
+int loadstorebookin(Book *load, FILE *file);
+int showbooks();
+void showfind(BookList blist);
 
 #endif

@@ -32,6 +32,11 @@ typedef struct _User {
 	struct _User *next;
 }User;
 
+typedef struct _Bookin {
+	unsigned int id;
+	unsigned int oriquantity;
+	struct _Bookin *next;
+}Bookin;
 
 //saves the database of books in the specified file
 //returns 0 if books were stored correctly, or an error code otherwise
@@ -70,5 +75,6 @@ BookList find_book_by_year (unsigned int year);
 
 Book enter();
 int initlist();
+int loadbookin(Book *load, File *file);
 
 #endif

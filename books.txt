@@ -1,48 +1,74 @@
 1
+42
 Harry Potter and the Philosopher’s Stone
+12
 J.K. Rowling
 1997
-100
+99
 
 2
+39
 Harry Potter and the Chamber of Secrets
+12
 J.K. Rowling
 1998
-98
+99
 
 3
-Harry Potter and the Prisoner of Azkaban
+41
+Harry Potter and the Prisoner of Azkaban!
+12
 J.K. Rowling
 1999
 100
 
 4
+35
 Harry Potter and the Goblet of Fire
+12
 J.K. Rowling
 2000
 100
 
 5
+41
 Harry Potter and the Order of the Phoenix
+12
 J.K. Rowling
 2003
 100
 
 6
+38
 Harry Potter and the Half-Blood Prince
+12
 J.K. Rowling
 2005
 100
 
 7
+36
 Harry Potter and the Deathly Hallows
+12
 J.K. Rowling
 2008
 100
 
 8
+4
 math
+3
 zxz
 2020
 0
+
+9
+6
+python
+3
+nyy
+2021
+0
+
+
 

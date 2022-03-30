@@ -1,4 +1,3 @@
-#include<stdio.h>
 #include<stdlib.h>
 #include <string.h>
 
@@ -10,17 +9,22 @@ User *uhead, *unode, *uend;
 
 int load_users(FILE *file)
 {
+	int len;
 	Book *temp;
 	temp = (Book*)malloc(sizeof(Book));
 	temp = head;
 	uhead = (User*)malloc(sizeof(User));
 	uend = uhead;
 	unode = (User*)malloc(sizeof(User));
-	unode->username = (char*)malloc(10*sizeof(unode->username));
-	while(fscanf(file, "%[^\r\n]%*[\r\n]", unode->username) != EOF)
+	while(fscanf(file, "%d", &len) != EOF)
 	{
-		unode->password = (char*)malloc(10*sizeof(unode->password));
-		fscanf(file, "%[^\r\n]%*[\r\n]", unode->password);
+		fscanf(file, "\n");
+		unode->username = (char*)malloc(len);
+		fgets (unode->username, len+1, file);
+		fscanf(file, "%d", &len);
+		fscanf(file, "\n");
+		unode->password = (char*)malloc(len);
+		fgets (unode->password, len+1, file);
 		fscanf(file, "%d", &unode->numborrowed);
 
 		for(int i=0; i<unode->numborrowed; i++){
@@ -37,7 +41,6 @@ int load_users(FILE *file)
 		uend->next = unode;
 		uend = unode;
 		unode = (User*)malloc(sizeof(User));
-		unode->username = (char*)malloc(10*sizeof(unode->username));
 	}
 	uend->next = NULL;
 	free(unode);
@@ -47,13 +50,18 @@ int load_users(FILE *file)
 
 int store_users(FILE *file)
 {
+	int len;
 	rewind(file);
 	User *temp;
 	temp = (User*)malloc(sizeof(User));
 	temp = uhead;
 	while(temp->next != NULL){
 		temp = temp->next;
+		len = strlen(temp->username);
+		fprintf(file, "%d\n", len);
 		fprintf(file, "%s\n",temp->username);
+		len = strlen(temp->password);
+		fprintf(file, "%d\n", len);
 		fprintf(file, "%s\n",temp->password);
 		fprintf(file, "%d\n",temp->numborrowed);
 		for(int i=0; i<temp->numborrowed; i++){
@@ -66,18 +74,33 @@ int store_users(FILE *file)
 
 int registeruser(){
 	User *temp;
-	int k = 1;
+	char a[100], b[100];
+	int k = 1, len, i = 0;
 	temp = (User*)malloc(sizeof(User));
 	temp = uhead;
 	unode = (User*)malloc(sizeof(User));
-	unode->username = (char*)malloc(10*sizeof(unode->username));
 	printf("\nPlease enter a user name: ");
-	scanf("%[^\n]", unode->username);
+	scanf("%[^\n]", a);
 	getchar();
-	unode->password = (char*)malloc(10*sizeof(unode->password));
+	len = strlen(a);
+	char c[len];
+	for(i=0; *(a+i)!='\0'; i++){
+		c[i] = *(a+i);
+	}
+	c[i] = '\0';
+	unode->username = (char*)malloc(len);
+  	strcpy (unode->username, c);
 	printf("Please enter a password: ");
-	scanf("%[^\n]", unode->password);
+	scanf("%[^\n]", b);
 	getchar();
+	len = strlen(b);
+	char d[len];
+	for(i=0; *(b+i)!='\0'; i++){
+		d[i] = *(b+i);
+	}
+	d[i] = '\0';
+	unode->password = (char*)malloc(len);
+  	strcpy (unode->password, d);
 
 	while(temp->next != NULL){
 		temp = temp->next;
@@ -133,7 +156,7 @@ User *login(){
 }
 
 void listAvailableBooks(Book *book){
-	printf("\nID \tTitle                                        \tAuthors             \tyear\tcopies\n");
+	printf("\nID \tTitle                                        \tAuthors             \tyear\n");
 	while(book->next != NULL){
 		book = book->next;
 		if(book->copies != 0){

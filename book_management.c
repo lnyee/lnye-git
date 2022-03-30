@@ -16,6 +16,7 @@ int initlist(){  //Initialize linked list
 
 int store_books(FILE *file)  //Save the book in a text file
 {
+	int len;
 	rewind(file);
 	Book *temp;
 	temp = (Book*)malloc(sizeof(Book));
@@ -23,7 +24,11 @@ int store_books(FILE *file)  //Save the book in a text file
 	while(temp->next != NULL){  //Traversal linked list
 		temp = temp->next;
 		fprintf(file, "%d\n", temp->id);
+		len = strlen(temp->title);
+		fprintf(file, "%d\n", len);
 		fprintf(file, "%s\n",temp->title);
+		len = strlen(temp->authors);
+		fprintf(file, "%d\n", len);
 		fprintf(file, "%s\n",temp->authors);
 		fprintf(file, "%d\n", temp->year);
 		fprintf(file, "%d\n", temp->copies);
@@ -35,18 +40,24 @@ int store_books(FILE *file)  //Save the book in a text file
 
 int load_books(FILE *file)
 {
+	int len = 0;
 	node = (Book*)malloc(sizeof(Book));  //Apply space for Book
 	booklist->length = 0;
 	while(fscanf(file, "%d", &node->id) != EOF)  //read file
 	{
 		fscanf(file, "\n");
-		node->title = (char*)malloc(10*sizeof(node->title));
-		fscanf(file,"%[^\r\n]%*[\r\n]",node->title);
-		node->authors = (char*)malloc(10*sizeof(node->authors));
-		fscanf(file,"%[^\r\n]%*[\r\n]",node->authors);
+		fscanf(file, "%d", &len);
+		fscanf(file, "\n");
+		node->title = (char*)malloc(len);
+		fgets (node->title, len+1, file);
+		fscanf(file, "%d", &len);
+		fscanf(file, "\n");
+		node->authors = (char*)malloc(len);
+		fgets (node->authors, len+1, file);
 		fscanf(file, "%d", &node->year);
 		fscanf(file, "\n");
 		fscanf(file, "%d", &node->copies);
+		fscanf(file, "\n");
 		fscanf(file, "\n");
 		booklist->length++;
 		end->next = node;
@@ -108,18 +119,33 @@ int storebookin(FILE *file){
 Book enter()
 {
 	Book enterbook;
-	char str[100];
-	int i = 0;
+	char str[100], a[100], b[100];
+	int i = 0, len;
 	printf("\nPlease enter the title: ");
-	enterbook.title = (char*)malloc(10*sizeof(enterbook.title));
-	scanf("%[^\n]", enterbook.title);
+	scanf("%[^\n]", a);
 	getchar();
+	len = strlen(a);
+	char c[len];
+	for(i=0; *(a+i)!='\0'; i++){
+		c[i] = *(a+i);
+	}
+	c[i] = '\0';
+	enterbook.title = (char*)malloc(len);
+  strcpy (enterbook.title, c);
 
 	printf("Please enter the author: ");
-	enterbook.authors = (char*)malloc(10*sizeof(enterbook.authors));
-	scanf("%[^\n]", enterbook.authors);
+	scanf("%[^\n]", b);
 	getchar();
+	len = strlen(b);
+	char d[len];
+	for(i=0; *(b+i)!='\0'; i++){
+		d[i] = *(b+i);
+	}
+	d[i] = '\0';
+	enterbook.authors = (char*)malloc(len);
+  strcpy (enterbook.authors, d);
 
+  i = 0;
 	enterbook.year = 0;
 	printf("Please enter the year: ");
 	scanf("%[^\n]", str);
@@ -168,7 +194,7 @@ int add_book(Book book)
 		}
 	}
 	getchar();
-	if(!(node->year>0 && node->year<2022) || !(node->copies>0)){
+	if(!(node->year>0) || !(node->copies>0)){
 		printf("Sorry, you attempted to add an invalid book, please try again.\n");
 		return 1;
 	}

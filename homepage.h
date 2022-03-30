@@ -1,23 +1,23 @@
 typedef struct _User {
 	char *username;
 	char *password;
-	Book *Borrowed[4];
 	int numborrowed;
+	Book *Borrowed[4];
 	struct _User *next;
 }User;
 
-User *load_users(FILE *file);
+int load_users(FILE *file);
 
-int store_users(FILE *file, User *head);
+int store_users(FILE *file);
 
-int registeruser(User *head);
+int registeruser();
 
-User *login(User *head);
+User *login();
 
 void listAvailableBooks(Book *book);
 
-void borrowBook(User *theUser, User *head, Book *book, int numBooks);
+void borrowBook(User *theUser, int numBooks);
 
 void listMyBooks( User *theUser);
 
-void returnBook(User *theUser, Book *book, int numBooks);
+void returnBook(User *theUser, int numBooks);

@@ -5,62 +5,83 @@
 #include "book_management.h"
 #include "homepage.h"
 #include "CLI.h"
+Book *node, *head, *end;
+User *uhead, *unode, *uend;
 
-User *load_users(FILE *file)
+int load_users(FILE *file)
 {
-	User *head, *node, *end;
-	head = (User*)malloc(sizeof(User));
-	end = head;
-	node = (User*)malloc(sizeof(User));
-	node->username = (char*)malloc(10*sizeof(node->username));
-	while(fscanf(file, "%[^\r\n]%*[\r\n]", node->username) != EOF)
+	Book *temp;
+	temp = (Book*)malloc(sizeof(Book));
+	temp = head;
+	uhead = (User*)malloc(sizeof(User));
+	uend = uhead;
+	unode = (User*)malloc(sizeof(User));
+	unode->username = (char*)malloc(10*sizeof(unode->username));
+	while(fscanf(file, "%[^\r\n]%*[\r\n]", unode->username) != EOF)
 	{
-		node->password = (char*)malloc(10*sizeof(node->password));
-		fscanf(file, "%[^\r\n]%*[\r\n]", node->password);
+		unode->password = (char*)malloc(10*sizeof(unode->password));
+		fscanf(file, "%[^\r\n]%*[\r\n]", unode->password);
+		fscanf(file, "%d", &unode->numborrowed);
+
+		for(int i=0; i<unode->numborrowed; i++){
+			unode->Borrowed[i] = (Book*)malloc(sizeof(Book));
+			fscanf(file, "%d", &unode->Borrowed[i]->id);
+			for(int j=0; j<unode->Borrowed[i]->id; j++){
+				temp = temp->next;
+			}
+			unode->Borrowed[i] = temp;
+			temp = head;
+		}
+
 		fscanf(file, "\n");
-		end->next = node;
-		end = node;
-		node = (User*)malloc(sizeof(User));
-		node->username = (char*)malloc(10*sizeof(node->username));
+		uend->next = unode;
+		uend = unode;
+		unode = (User*)malloc(sizeof(User));
+		unode->username = (char*)malloc(10*sizeof(unode->username));
 	}
-	end->next = NULL;
-	free(node);
-	free(node->username);
-	return head;
+	uend->next = NULL;
+	free(unode);
+	free(unode->username);
+	return 0;
 }
 
-int store_users(FILE *file, User *head)
+int store_users(FILE *file)
 {
+	rewind(file);
 	User *temp;
 	temp = (User*)malloc(sizeof(User));
-	temp = head;
+	temp = uhead;
 	while(temp->next != NULL){
 		temp = temp->next;
 		fprintf(file, "%s\n",temp->username);
 		fprintf(file, "%s\n",temp->password);
+		fprintf(file, "%d\n",temp->numborrowed);
+		for(int i=0; i<temp->numborrowed; i++){
+			fprintf(file, "%d\n", temp->Borrowed[i]->id);
+		}
 		fprintf(file, "\n");
 	}
 	return 0;
 }
 
-int registeruser(User *head){
-	User *temp, *node;
+int registeruser(){
+	User *temp;
 	int k = 1;
 	temp = (User*)malloc(sizeof(User));
-	temp = head;
-	node = (User*)malloc(sizeof(User));
-	node->username = (char*)malloc(10*sizeof(node->username));
+	temp = uhead;
+	unode = (User*)malloc(sizeof(User));
+	unode->username = (char*)malloc(10*sizeof(unode->username));
 	printf("\nPlease enter a user name: ");
-	scanf("%[^\n]", node->username);
+	scanf("%[^\n]", unode->username);
 	getchar();
-	node->password = (char*)malloc(10*sizeof(node->password));
+	unode->password = (char*)malloc(10*sizeof(unode->password));
 	printf("Please enter a password: ");
-	scanf("%[^\n]", node->password);
+	scanf("%[^\n]", unode->password);
 	getchar();
 
 	while(temp->next != NULL){
 		temp = temp->next;
-		if(!strcmp(temp->username, node->username)){
+		if(!strcmp(temp->username, unode->username)){
 			printf("Sorry, registration unsuccessful, the username you entered already exists.\n");
 			k = 0;
 			break;
@@ -68,18 +89,19 @@ int registeruser(User *head){
 		}
 	}
 	if(k){
+		unode->numborrowed = 0;
 		printf("Registered library account successfully\n");
-		temp->next = node;
-		temp = node;
-		temp->next = NULL;
+		uend->next = unode;
+		uend = unode;
+		uend->next = NULL;
 	}
 	return 0;
 }
 
-User *login(User *head){
+User *login(){
 	User *temp;
 	temp = (User*)malloc(sizeof(User));
-	temp = head;
+	temp = uhead;
 	char *username, *password;
 	username = (char*)malloc(20*sizeof(char));
 	printf("Please enter your user name: ");
@@ -92,10 +114,9 @@ User *login(User *head){
 			printf("Please enter your password: ");
 			scanf("%[^\n]", password);
 			if(!strcmp(temp->password, password)){
-				printf("\n(logged in as: %s)", username);
 				if(!strcmp(username, "librarian")){
 					LibrarianCLI();
-					return head;
+					return uhead;
 				}
 				else{
 					return temp;
@@ -103,12 +124,12 @@ User *login(User *head){
 			}
 			else{
 				printf("Password error, please try again.\n");
-				return head;
+				return uhead;
 			}
 		}
 	}
 	printf("The user name does not exist.\n");
-	return head;
+	return uhead;
 }
 
 void listAvailableBooks(Book *book){
@@ -117,16 +138,18 @@ void listAvailableBooks(Book *book){
 		book = book->next;
 		if(book->copies != 0){
 			printf("%-3d\t%-45s\t%-20s\t%-4d\t%-6d\n", book->id, book->title, book->authors, book->year, book->copies);
-  		}
+			}
 	}
 }
 
-void borrowBook(User *theUser, User *head, Book *book, int numBooks){
-	theUser->numborrowed = 0;
-	if(theUser == head){
+void borrowBook(User *theUser, int numBooks){
+	Book *temp;
+	temp = (Book*)malloc(sizeof(Book));
+	temp = head;
+	if(theUser == uhead){
 		return;
 	}
-	if(theUser->numborrowed == 4){
+	if(theUser->numborrowed >= 4){
 		printf("You have to return a book before you can borrow another\n");
 	}
 	else{
@@ -139,17 +162,17 @@ void borrowBook(User *theUser, User *head, Book *book, int numBooks){
 		else
 		{
 			for(int i = 0; i<choice; i++){
-				book = book->next;
+				temp = temp->next;
 			}
-			if(book->copies == 0)
+			if(temp->copies == 0)
 				printf("Book is not available\n");
 			else
 			{
-				book->copies--; 
-				theUser->Borrowed[theUser->numborrowed] = book;
-				theUser->numborrowed++; 
+				temp->copies--;
+				theUser->Borrowed[theUser->numborrowed] = temp;
+				theUser->numborrowed++;
 			}
-	      }
+		}
 	}
   return; 
 }
@@ -164,10 +187,13 @@ void listMyBooks( User *theUser) {
 	printf("%-3d\t%-45s\t%-20s\t%-4d\n", theUser->Borrowed[i]->id, theUser->Borrowed[i]->title,theUser->Borrowed[i]->authors, theUser->Borrowed[i]->year);
 	}
 
-  return;
+	return;
 }
 
-void returnBook(User *theUser, Book *book, int numBooks) {
+void returnBook(User *theUser, int numBooks) {
+	Book *temp;
+	temp = (Book*)malloc(sizeof(Book));
+	temp = head;
 	if(theUser->numborrowed == 0)
 	{
 		printf("Error\nYou have not borrowed any books\n");
@@ -198,9 +224,9 @@ void returnBook(User *theUser, Book *book, int numBooks) {
 		theUser->numborrowed--;
 		theUser->Borrowed[theUser->numborrowed] = NULL;
 		for(int i = 0; i<choice; i++){
-			book = book->next;
+			temp = temp->next;
 		}
-		book->copies++;
+		temp->copies++;
 	}
 	return;
 }

@@ -8,62 +8,53 @@
 BookList *booklist;
 Book *node, *head, *end;
 Bookin *h, *e, *n;
+User *uhead, *unode, *uend;
 
-void libraryCLI() {
+void libraryCLI(FILE *f, FILE *fi, FILE *fp) {
     int libraryOpen = 1;
     int option;
-	Book *load;
-	load = (Book*)malloc(sizeof(Book));
-    User *user, *log;
-    user = (User*)malloc(sizeof(User));
+    User *log;
     log = (User*)malloc(sizeof(User));
 
-	initlist();
-	load = head;
+    initlist();
 
-	FILE *fpr = fopen("books.txt", "r");
-	load_books(fpr);
-	FILE *fpb = fopen("bookin.txt", "w");
-	loadstorebookin(load, fpb);
-	fclose(fpb);
-	fclose(fpr);
-    FILE *fp = fopen("user.txt", "r");
-    if(fp == NULL){
+    load_books(f);
+    loadbookin(fp);
+    if(fi == NULL){
         printf("!");
     }
-    user = load_users(fp);
-    fclose(fp);
-   
+    load_users(fi);
+
     while(libraryOpen){
         printf("\nPlease choose an option:\n1 Register an account\n2 Login\n3 Search for books\n4 Display all books\n5 Quit\nChoice: ");
         option = optionChoice();
 
         if(option == 1) {
-            registeruser(user);
+            registeruser();
         }
         else if( option == 2 ) {
             printf("\n");
-            log = login(user);
-            if(log != user){
-                UsersCLI(log, user);
+            log = login();
+            if(log != uhead){
+                UsersCLI(log);
             }
         }
         else if(option == 3) {
             findbooksCLI();
         }
         else if(option == 4) {
-        	printf("\nID \tTitle                                        \tAuthors             \tyear\tcopies\n");
-        	showbooks();
-			printf("\n");
+            printf("\nID \tTitle                                        \tAuthors             \tyear\tcopies\n");
+            showbooks();
+            printf("\n");
         }
         else if(option == 5) {
             libraryOpen = 0;
-            FILE *fpp = fopen("user.txt", "w");
-            store_users(fpp, user);
-            fclose(fpp);
-            FILE *fpw = fopen("books.txt", "w");
-            store_books(fpw);
-            fclose(fpw);
+            storebookin(fp);
+            fclose(fp);
+            store_users(fi);
+            fclose(fi);
+            store_books(f);
+            fclose(f);
             printf("\nClosing\n");
         }
         else

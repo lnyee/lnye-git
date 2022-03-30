@@ -6,7 +6,7 @@ BookList *booklist;
 Book *node, *head, *end;
 Bookin *h, *e, *n;
 
-int initlist(){
+int initlist(){  //Initialize linked list
 	booklist = (BookList*)malloc(sizeof(BookList));
 	head = (Book*)malloc(sizeof(Book));
 	end = head;
@@ -14,12 +14,13 @@ int initlist(){
 	return 0;
 }
 
-int store_books(FILE *file)
+int store_books(FILE *file)  //Save the book in a text file
 {
+	rewind(file);
 	Book *temp;
 	temp = (Book*)malloc(sizeof(Book));
 	temp = booklist->list;
-	while(temp->next != NULL){
+	while(temp->next != NULL){  //Traversal linked list
 		temp = temp->next;
 		fprintf(file, "%d\n", temp->id);
 		fprintf(file, "%s\n",temp->title);
@@ -28,6 +29,7 @@ int store_books(FILE *file)
 		fprintf(file, "%d\n", temp->copies);
 		fprintf(file, "\n");
 	}
+	free(temp);
 	return 0;
 }
 
@@ -52,6 +54,8 @@ int load_books(FILE *file)
 		node = (Book*)malloc(sizeof(Book));
 	}
 	end->next = NULL;
+	free(node->title);
+	free(node->authors);
 	free(node);
 	return 0;
 }
@@ -69,23 +73,35 @@ int showbooks(){
 	return 0;
 }
 
-int loadstorebookin(Book *load, FILE *file){
+int loadbookin(FILE *file){
 	h = (Bookin*)malloc(sizeof(Bookin));
 	e = (Bookin*)malloc(sizeof(Bookin));
 	h = e;
 	n = (Bookin*)malloc(sizeof(Bookin));
-	while(load->next != 0){
-		load = load->next;
-		n->id = load->id;
-		fprintf(file, "%d\n", n->id);
-		n->oriquantity = load->copies;
-		fprintf(file, "%d\n", n->oriquantity);
+	while(fscanf(file, "%d", &n->id) != EOF)
+	{
+		fscanf(file, "\n");
+		fscanf(file, "%d", &n->oriquantity);
+		fscanf(file, "\n");
 		e->next = n;
 		e = n;
 		n = (Bookin*)malloc(sizeof(Bookin));
 	}
 	e->next = NULL;
 	free(n);
+	return 0;
+}
+
+int storebookin(FILE *file){
+	rewind(file);
+	Bookin *temp;
+	temp = (Bookin*)malloc(sizeof(Bookin));
+	temp = h;
+	while(temp->next != NULL){
+		temp = temp->next;
+		fprintf(file, "%d\n", temp->id);
+		fprintf(file, "%d\n", temp->oriquantity);
+	}
 	return 0;
 }
 
@@ -168,6 +184,7 @@ int add_book(Book book)
 	}
 
 	if(k){
+		printf("Added successfully.\n");
 		n->oriquantity = node->copies;
 		e->next = n;
 		e = n;

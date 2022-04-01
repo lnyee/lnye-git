@@ -113,6 +113,7 @@ int storebookin(FILE *file){
 		fprintf(file, "%d\n", temp->id);
 		fprintf(file, "%d\n", temp->oriquantity);
 	}
+	free(temp);
 	return 0;
 }
 
@@ -225,37 +226,36 @@ int add_book(Book book)
 
 int remove_book(Book book){
 	Book *r, *w, *q;
-	Bookin *c;
-	c = (Bookin*)malloc(sizeof(Bookin));
-	c = h->next;
-	node = (Book*)malloc(sizeof(Book));
 	r = (Book*)malloc(sizeof(Book));
 	w = (Book*)malloc(sizeof(Book));
-	w = booklist->list;
-	q = booklist->list;
+	w = head;
 	r = w->next;
+	q = head;
+	Bookin *c, *d;
+	c = (Bookin*)malloc(sizeof(Bookin));
+	d = (Bookin*)malloc(sizeof(Bookin));
+	c = h;
+	d = c->next;
 	int k = 1, a = 1;
-	node->id = book.id;
-	node->title = book.title;
-	node->authors = book.authors;
-	node->year = book.year;
-	node->copies = book.copies;
 	while(r != NULL){
-		if(!strcmp(r->title, node->title) && !strcmp(r->authors, node->authors) && r->year == node->year)
+		if(!strcmp(r->title, book.title) && !strcmp(r->authors, book.authors) && r->year == book.year)
 		{
-			if(c->oriquantity != r->copies){
+			if(d->oriquantity != r->copies){
 				printf("Some of the books are being borrowed. Please try again after they are all returned.\n");
 				return 1;
 			}
 			w->next = r->next;
+			c->next = d->next;
 			booklist->length--;
 			k = 0;
 			c = h;
+			printf("Removed successfully.\n");
 			break;
 		}
 		w = r;
 		r = r->next;
-		c = c->next;
+		c = d;
+		d = d->next;
 	}
 	if(k){
 		printf("This book doesn't exists.\n");
@@ -371,3 +371,25 @@ void showfind(BookList blist){
 	}
 	return;
 }
+
+void releaseLibrary(){  //Free the memory of Book linked list and Bookin linked list
+	Book *temp;
+	temp = (Book*)malloc(sizeof(Book));
+	head = head->next;
+	Bookin *a;
+	a = (Bookin*)malloc(sizeof(Bookin));
+	h = h->next;
+	while(head != NULL){
+		temp = head;
+		head = head->next;
+		free(temp->title);
+		free(temp->authors);
+		free(temp);
+	}
+	while(h != NULL){
+		a = h;
+		h = h->next;
+		free(a);
+	}
+}
+

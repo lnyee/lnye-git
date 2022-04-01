@@ -6,7 +6,7 @@
 #include "CLI.h"
 BookList *booklist;
 Book *node, *head, *end;
-Bookin *h, *e, *n;
+Bookin *h, *e;
 User *uhead, *unode, *uend;
 
 int optionChoice() {
@@ -108,7 +108,6 @@ void UsersCLI(User *user){
 		option = optionChoice();
 
 		if(option == 1){
-			listAvailableBooks(head);
 			borrowBook(user, booklist->length);
 		}
 

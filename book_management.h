@@ -77,4 +77,6 @@ int showbooks();
 
 void showfind(BookList blist);
 
+void releaseLibrary();
+
 #endif

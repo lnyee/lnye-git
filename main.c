@@ -17,11 +17,21 @@ int main(int argc, char **argv){
 	strcpy(bookFile, argv[1]);
 	strcpy(userFile, argv[2]);
 	strcpy(bookinFile, argv[3]);
-	FILE *book = fopen(bookFile, "r+");
-	FILE *user = fopen(userFile, "r+");
-	FILE *bookin = fopen(bookinFile, "r+");
+	FILE *book = fopen(bookFile, "r");
+	FILE *user = fopen(userFile, "r");
+	FILE *bookin = fopen(bookinFile, "r");
 	printf("\nIntialising library system!\n");
 	libraryCLI(book, user, bookin);
 	printf("\nClosing library system!\n\n");
+	FILE *bookw = fopen(bookFile, "w");
+	FILE *userw = fopen(userFile, "w");
+	FILE *bookinw = fopen(bookinFile, "w");
+	storebookin(bookinw);
+	fclose(bookinw);
+	store_users(userw);
+	fclose(userw);
+	store_books(bookw);
+	fclose(bookw);
+	releaseLibrary();
 	return 0;
 }

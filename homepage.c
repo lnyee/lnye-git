@@ -69,6 +69,7 @@ int store_users(FILE *file)
 		}
 		fprintf(file, "\n");
 	}
+	free(temp);
 	return 0;
 }
 
@@ -155,12 +156,15 @@ User *login(){
 	return uhead;
 }
 
-void listAvailableBooks(Book *book){
+void listAvailableBooks(){
+	Book *temp;
+	temp = (Book*)malloc(sizeof(Book));
+	temp = head;
 	printf("\nID \tTitle                                        \tAuthors             \tyear\n");
-	while(book->next != NULL){
-		book = book->next;
-		if(book->copies != 0){
-			printf("%-3d\t%-45s\t%-20s\t%-4d\t%-6d\n", book->id, book->title, book->authors, book->year, book->copies);
+	while(temp->next != NULL){
+		temp = temp->next;
+		if(temp->copies != 0){
+			printf("%-3d\t%-45s\t%-20s\t%-4d\t%-6d\n", temp->id, temp->title, temp->authors, temp->year, temp->copies);
 			}
 	}
 }
@@ -176,6 +180,7 @@ void borrowBook(User *theUser, int numBooks){
 		printf("You have to return a book before you can borrow another\n");
 	}
 	else{
+		listAvailableBooks();
 		int choice;
 		printf("Which book?(number): ");
 		scanf("%d",&choice);

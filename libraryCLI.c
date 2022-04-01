@@ -6,7 +6,7 @@
 #include "CLI.h"
 BookList *booklist;
 Book *node, *head, *end;
-Bookin *h, *e, *n;
+Bookin *h, *e;
 User *uhead, *unode, *uend;
 
 void libraryCLI(FILE *f, FILE *fi, FILE *fp) {
@@ -19,9 +19,6 @@ void libraryCLI(FILE *f, FILE *fi, FILE *fp) {
 
     load_books(f);
     loadbookin(fp);
-    if(fi == NULL){
-        printf("!");
-    }
     load_users(fi);
 
     while(libraryOpen){
@@ -48,12 +45,6 @@ void libraryCLI(FILE *f, FILE *fi, FILE *fp) {
         }
         else if(option == 5) {
             libraryOpen = 0;
-            storebookin(fp);
-            fclose(fp);
-            store_users(fi);
-            fclose(fi);
-            store_books(f);
-            fclose(f);
             printf("\nClosing\n");
         }
         else

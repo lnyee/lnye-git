@@ -14,10 +14,10 @@ int registeruser();
 
 User *login();
 
-void listAvailableBooks(Book *book);
+void listAvailableBooks();
 
 void borrowBook(User *theUser, int numBooks);
 
-void listMyBooks( User *theUser);
+void listMyBooks(User *theUser);
 
 void returnBook(User *theUser, int numBooks);

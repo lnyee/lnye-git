@@ -4,7 +4,7 @@ Harry Potter and the Philosopher’s Stone
 12
 J.K. Rowling
 1997
-99
+100
 
 2
 39
@@ -20,7 +20,7 @@ Harry Potter and the Prisoner of Azkaban!
 12
 J.K. Rowling
 1999
-100
+99
 
 4
 35
@@ -60,7 +60,7 @@ math
 3
 zxz
 2020
-0
+1
 
 9
 6
@@ -68,7 +68,5 @@ python
 3
 nyy
 2021
-0
-
-
+1
 

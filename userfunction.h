@@ -21,3 +21,5 @@ void borrowBook(User *theUser, int numBooks);
 void listMyBooks(User *theUser);
 
 void returnBook(User *theUser, int numBooks);
+
+void releaseUser();

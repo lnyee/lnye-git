@@ -160,7 +160,7 @@ void listAvailableBooks(){
 	Book *temp;
 	temp = (Book*)malloc(sizeof(Book));
 	temp = head;
-	printf("\nID \tTitle                                        \tAuthors             \tyear\n");
+	printf("\nID \tTitle                                        \tAuthors             \tyear\tcopies\n");
 	while(temp->next != NULL){
 		temp = temp->next;
 		if(temp->copies != 0){
@@ -208,7 +208,7 @@ void borrowBook(User *theUser, int numBooks){
 void listMyBooks( User *theUser) {
 	int i;
 	if(theUser->numborrowed != 0){
-		printf("\nID \tTitle                                        \tAuthors             \tyear\tcopies\n");
+		printf("\nID \tTitle                                        \tAuthors             \tyear\n");
 	}
 	for(i=0;i<theUser->numborrowed;i++)
 	{
@@ -255,6 +255,18 @@ void returnBook(User *theUser, int numBooks) {
 			temp = temp->next;
 		}
 		temp->copies++;
+	}
+	return;
+}
+
+void releaseUser(){  //Free the memory of User linked list
+	User *user;
+	user = (User*)malloc(sizeof(User));
+	uhead = uhead->next;
+	while(uhead != NULL){
+		user = uhead;
+		uhead = uhead->next;
+		free(user);
 	}
 	return;
 }

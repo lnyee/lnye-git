@@ -32,6 +32,7 @@ int main(int argc, char **argv){
 	fclose(userw);
 	store_books(bookw);
 	fclose(bookw);
+	releaseUser();
 	releaseLibrary();
 	return 0;
 }

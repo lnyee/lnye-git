@@ -8,3 +8,9 @@
 > Display the initial interface of library management system。
 * userCLI
 > Display the interface after the librarian or ordinary user logs in.
+* books.txt
+> Book information
+* bookin.txt
+> Original copies of books
+* user.txt
+> Librarian and user information

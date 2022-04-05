@@ -1,7 +1,7 @@
 # code details
 
 EXE = ./library
-SRC= main.c libraryCLI.c userCLI.c book_management.c homepage.c 
+SRC= main.c libraryCLI.c userCLI.c book_management.c userfunction.c 
 
 # generic build details
 
@@ -28,8 +28,9 @@ clean:
 
 # dependencies
 
-main.o: main.c book_management.h homepage.h CLI.h
-libraryCLI.o: libraryCLI.c book_management.h homepage.h CLI.h
-user.o: user.c  book_management.h homepage.h CLI.h
+main.o: main.c book_management.h userfunction.h CLI.h
+libraryCLI.o: libraryCLI.c book_management.h userfunction.h CLI.h
+user.o: user.c  book_management.h userfunction.h CLI.h
 book_management.o: book_management.c book_management.h
-homepage.o: homepage.c book_management.h homepage.h CLI.h
+userfunction.o: userfunction.c book_management.h userfunction.h CLI.h
+

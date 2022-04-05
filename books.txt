@@ -12,7 +12,7 @@ Harry Potter and the Chamber of Secrets
 12
 J.K. Rowling
 1998
-99
+100
 
 3
 41
@@ -20,7 +20,7 @@ Harry Potter and the Prisoner of Azkaban!
 12
 J.K. Rowling
 1999
-99
+100
 
 4
 35
@@ -53,20 +53,4 @@ Harry Potter and the Deathly Hallows
 J.K. Rowling
 2008
 100
-
-8
-4
-math
-3
-zxz
-2020
-1
-
-9
-6
-python
-3
-nyy
-2021
-1
 

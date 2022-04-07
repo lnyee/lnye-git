@@ -1,4 +1,5 @@
 # [URL]https://github.com/lnyee/lnye-git
+![Screenshot](https://github.com/lnyee/lnye-git/blob/master/screenshot/screenshot.PNG)
 ## Library System
 * book_management
 > It includes the functions of loading books, managing books and finding books, and saves the initial number of copies of each book to bookin.txt file.

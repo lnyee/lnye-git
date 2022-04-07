@@ -1,6 +1,6 @@
 # code details
 
-EXE = ./library
+EXE = ./library_system
 SRC= main.c libraryCLI.c userCLI.c book_management.c userfunction.c 
 
 # generic build details

@@ -79,4 +79,6 @@ void showfind(BookList blist);
 
 void releaseLibrary();
 
+int digit(char str[100]);
+
 #endif

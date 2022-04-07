@@ -11,15 +11,27 @@ int main(int argc, char **argv){
 	char bookinFile[40];
 	if (argc != 4)
 	{
-		printf("Error\nExpected use: ./library books.txt user.txt bookin.txt\n");
+		printf("Error\nExpected use: ./library_system books.txt user.txt bookin.txt\n");
 		exit(1);
 	}
 	strcpy(bookFile, argv[1]);
 	strcpy(userFile, argv[2]);
 	strcpy(bookinFile, argv[3]);
 	FILE *book = fopen(bookFile, "r");
+	if(book == NULL){
+		printf("The file %s does not exist\n", bookFile);
+		return 1;
+	}
 	FILE *user = fopen(userFile, "r");
+	if(user == NULL){
+		printf("The file %s does not exist\n", userFile);
+		return 1;
+	}
 	FILE *bookin = fopen(bookinFile, "r");
+	if(bookin == NULL){
+		printf("The file %s does not exist\n", bookinFile);
+		return 1;
+	}
 	printf("\nIntialising library system!\n");
 	libraryCLI(book, user, bookin);
 	printf("\nClosing library system!\n\n");

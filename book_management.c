@@ -22,17 +22,17 @@ int store_books(FILE *file)  //Save the book in a text file
 	temp = (Book*)malloc(sizeof(Book));
 	temp = booklist->list;
 	while(temp->next != NULL){  //Traversal linked list
-		temp = temp->next;
-		fprintf(file, "%d\n", temp->id);
+		temp = temp->next;                      //Format:
+		fprintf(file, "%d\n", temp->id);        //Book ID
 		len = strlen(temp->title);
-		fprintf(file, "%d\n", len);
-		fprintf(file, "%s\n",temp->title);
+		fprintf(file, "%d\n", len);             //The length of book title
+		fprintf(file, "%s\n",temp->title);      //Book title
 		len = strlen(temp->authors);
-		fprintf(file, "%d\n", len);
-		fprintf(file, "%s\n",temp->authors);
-		fprintf(file, "%d\n", temp->year);
-		fprintf(file, "%d\n", temp->copies);
-		fprintf(file, "\n");
+		fprintf(file, "%d\n", len);             //The length of book author
+		fprintf(file, "%s\n",temp->authors);    //Book author
+		fprintf(file, "%d\n", temp->year);      //Book year
+		fprintf(file, "%d\n", temp->copies);    //Book copies
+		fprintf(file, "\n");                    //Empty line
 	}
 	free(temp);
 	return 0;
@@ -40,24 +40,78 @@ int store_books(FILE *file)  //Save the book in a text file
 
 int load_books(FILE *file)
 {
+	char *load;
+	load = (char*)malloc(100*sizeof(char));
 	int len = 0;
 	node = (Book*)malloc(sizeof(Book));  //Apply space for Book
 	booklist->length = 0;
-	while(fscanf(file, "%d", &node->id) != EOF)  //read file
+
+	while(fscanf(file, "%[^\n]", load) != EOF)    //load book ID
 	{
+		len = digit(load);                          //Check if it is a number
+		if(len == -1){
+			printf("The book file is corrupt.\n");
+			exit(1);																	//If it is not a number, return -1 and exit the program.
+		}
+		node->id = len;
 		fscanf(file, "\n");
-		fscanf(file, "%d", &len);
+
+		// load book title
+		// 1. read the length of title
+		fscanf(file, "%[^\n]", load);
+		len = digit(load);
+		if(len == -1){
+			printf("The book file is corrupt.\n");
+			exit(1);
+		}
 		fscanf(file, "\n");
+		// 2. Apply space and load title
 		node->title = (char*)malloc(len);
 		fgets (node->title, len+1, file);
-		fscanf(file, "%d", &len);
+		if(strlen(node->title) != len){
+			printf("The user file is corrupt.\n");
+			exit(1);
+		}
 		fscanf(file, "\n");
+
+		// load book author
+		// 1. read the length of author
+		fscanf(file, "%[^\n]", load);
+		len = digit(load);
+		if(len == -1){
+			printf("The book file is corrupt.\n");
+			exit(1);
+		}
+		fscanf(file, "\n");
+		// 2. Apply space and load author
 		node->authors = (char*)malloc(len);
 		fgets (node->authors, len+1, file);
-		fscanf(file, "%d", &node->year);
+		if(strlen(node->authors) != len){
+			printf("The user file is corrupt.\n");
+			exit(1);
+		}
 		fscanf(file, "\n");
-		fscanf(file, "%d", &node->copies);
+
+		// load book year
+		fscanf(file, "%[^\n]", load);
+		len = digit(load);
+		if(len == -1){
+			printf("The book file is corrupt.\n");
+			exit(1);
+		}
+		node->year = len;
 		fscanf(file, "\n");
+
+		// load book copies
+		fscanf(file, "%[^\n]", load);
+		len = digit(load);
+		if(len == -1){
+			printf("The book file is corrupt.\n");
+			exit(1);
+		}
+		node->copies = len;
+		fscanf(file, "\n");
+
 		fscanf(file, "\n");
 		booklist->length++;
 		end->next = node;
@@ -65,13 +119,14 @@ int load_books(FILE *file)
 		node = (Book*)malloc(sizeof(Book));
 	}
 	end->next = NULL;
+	free(load);
 	free(node->title);
 	free(node->authors);
 	free(node);
 	return 0;
 }
 
-int showbooks(){
+int showbooks(){   //Format: ID  title  authors  year  copies
 	Book *show;
 	show = (Book*)malloc(sizeof(Book));
 	show = head;
@@ -85,20 +140,42 @@ int showbooks(){
 }
 
 int loadbookin(FILE *file){
+	char *load;
+	load = (char*)malloc(100*sizeof(char));
+	int len, line = 0;
 	h = (Bookin*)malloc(sizeof(Bookin));
 	e = (Bookin*)malloc(sizeof(Bookin));
 	h = e;
 	n = (Bookin*)malloc(sizeof(Bookin));
-	while(fscanf(file, "%d", &n->id) != EOF)
+	while(fscanf(file, "%[^\n]", load) != EOF)
 	{
+		line++;
+		len = digit(load);
+		if(len == -1){
+			printf("The bookin file is corrupt.\n");
+			exit(1);
+		}
+		n->id = len;
 		fscanf(file, "\n");
-		fscanf(file, "%d", &n->oriquantity);
+		fscanf(file, "%[^\n]", load);
+		line++;
+		len = digit(load);
+		if(len == -1){
+			printf("The bookin file is corrupt.\n");
+			exit(1);
+		}
+		n->oriquantity = len;
 		fscanf(file, "\n");
 		e->next = n;
 		e = n;
 		n = (Bookin*)malloc(sizeof(Bookin));
 	}
+	if(line != booklist->length*2){
+		printf("The bookin file is corrupt.\n");
+		exit(1);
+	}
 	e->next = NULL;
+	free(load);
 	free(n);
 	return 0;
 }
@@ -108,21 +185,23 @@ int storebookin(FILE *file){
 	Bookin *temp;
 	temp = (Bookin*)malloc(sizeof(Bookin));
 	temp = h;
-	while(temp->next != NULL){
+	while(temp->next != NULL){                      //Format:
 		temp = temp->next;
-		fprintf(file, "%d\n", temp->id);
-		fprintf(file, "%d\n", temp->oriquantity);
+		fprintf(file, "%d\n", temp->id);              //Book ID
+		fprintf(file, "%d\n", temp->oriquantity);     //Book original copies
 	}
 	free(temp);
 	return 0;
 }
 
-Book enter()
+Book enter()                                      // Read data for adding books and removing books
 {
 	Book enterbook;
-	char str[100], a[100], b[100];
+	char *str;
+	str = (char*)malloc(100*sizeof(char));
+	char a[100], b[100];
 	int i = 0, len;
-	printf("\nPlease enter the title: ");
+	printf("\nPlease enter the title: ");           // Read book title
 	scanf("%[^\n]", a);
 	getchar();
 	len = strlen(a);
@@ -134,7 +213,7 @@ Book enter()
 	enterbook.title = (char*)malloc(len);
   strcpy (enterbook.title, c);
 
-	printf("Please enter the author: ");
+	printf("Please enter the author: ");            // Read book author
 	scanf("%[^\n]", b);
 	getchar();
 	len = strlen(b);
@@ -148,18 +227,12 @@ Book enter()
 
   i = 0;
 	enterbook.year = 0;
-	printf("Please enter the year: ");
-	scanf("%[^\n]", str);
+	printf("Please enter the year: ");              // Read book year
+	scanf("%[^\n]", str);                           // Check if it is a number
 	getchar();
-	while(str[i]!='\0'){
-		if(str[i]>='0'&&str[i]<='9'){
-			enterbook.year=enterbook.year*10+(str[i]-'0');
-			i++;
-		}
-		else{
-			enterbook.year = 0;
-			break;
-		}
+	len = digit(str);                               // Is a number: year = number
+	if(len != -1){																	// Not: year = 0
+		enterbook.year = len;
 	}
 	enterbook.id = booklist->length+1;
 	return enterbook;
@@ -179,9 +252,9 @@ int add_book(Book book)
 	node->id = book.id;
 	node->title = book.title;
 	node->authors = book.authors;
-	node->year = book.year;
+	node->year = book.year;                          // Put the book's data into a linked list
 
-	node->copies = 0;
+	node->copies = 0;																 // Read book copies
 	printf("Please enter the copies the library has: ");
 	scanf("%[^\n]", cop);
 	while(cop[i]!='\0'){
@@ -195,12 +268,12 @@ int add_book(Book book)
 		}
 	}
 	getchar();
-	if(!(node->year>0) || !(node->copies>0)){
+	if(!(node->year>=0) || !(node->copies>0)){       // Check if year and copies are valid
 		printf("Sorry, you attempted to add an invalid book, please try again.\n");
 		return 1;
 	}
 
-	while(b->next != NULL){
+	while(b->next != NULL){													 // Check if the added book already exists
 		b = b->next;
 		if(!strcmp(b->title, node->title) && !strcmp(b->authors, node->authors) && b->year == node->year)
 		{
@@ -238,9 +311,9 @@ int remove_book(Book book){
 	d = c->next;
 	int k = 1, a = 1;
 	while(r != NULL){
-		if(!strcmp(r->title, book.title) && !strcmp(r->authors, book.authors) && r->year == book.year)
+		if(!strcmp(r->title, book.title) && !strcmp(r->authors, book.authors) && r->year == book.year)  // Check whether the book already exists
 		{
-			if(d->oriquantity != r->copies){
+			if(d->oriquantity != r->copies){                   // Check if this book is on loan
 				printf("Some of the books are being borrowed. Please try again after they are all returned.\n");
 				return 1;
 			}
@@ -335,7 +408,6 @@ BookList find_book_by_year (unsigned int year){
 	y.length = 0;
 	hd = (Book*)malloc(sizeof(Book));
 	go = (Book*)malloc(sizeof(Book));
-	// ed = (Book*)malloc(sizeof(Book));
 	ed = hd;
 	ye = (Book*)malloc(sizeof(Book));
 	ye = head;
@@ -393,3 +465,24 @@ void releaseLibrary(){  //Free the memory of Book linked list and Bookin linked 
 	}
 }
 
+int digit(char *str){                       // Check if the input is a number
+	int digit = 0, i = 0, j = 0;
+	while(*(str+i) != '\0'){
+		if(*(str+i) >= '0'&&*(str+i) <= '9'){
+			digit = digit*10 + (*(str+i) - '0');
+			i++;
+		}
+		else{
+			while(*(str+j) != '\0'){
+				*(str+j) = '\0';
+				j++;
+			}
+			return -1;
+		}
+	}
+	while(*(str+j) != '\0'){
+		*(str+j) = '\0';
+		j++;
+	}
+	return digit;
+}

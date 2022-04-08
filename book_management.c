@@ -51,7 +51,7 @@ int load_books(FILE *file)
 		len = digit(load);                          //Check if it is a number
 		if(len == -1){
 			printf("The book file is corrupt.\n");
-			exit(1);																	//If it is not a number, return -1 and exit the program.
+			exit(1);								//If it is not a number, return -1 and exit the program.
 		}
 		node->id = len;
 		fscanf(file, "\n");
@@ -130,7 +130,7 @@ int showbooks(){   //Format: ID  title  authors  year  copies
 	Book *show;
 	show = (Book*)malloc(sizeof(Book));
 	show = head;
-	while(show->next != NULL){
+	for(int i = 0;i<booklist->length;i++){
 		show = show->next;
 		if(show->copies != 0){
 			printf("%-3d\t%-45s\t%-20s\t%-4d\t%-6d\n", show->id, show->title, show->authors, show->year, show->copies);
@@ -231,7 +231,7 @@ Book enter()                                      // Read data for adding books 
 	scanf("%[^\n]", str);                           // Check if it is a number
 	getchar();
 	len = digit(str);                               // Is a number: year = number
-	if(len != -1){																	// Not: year = 0
+	if(len >= 0){									// Not: year = 0
 		enterbook.year = len;
 	}
 	enterbook.id = booklist->length+1;
@@ -268,7 +268,7 @@ int add_book(Book book)
 		}
 	}
 	getchar();
-	if(!(node->year>=0) || !(node->copies>0)){       // Check if year and copies are valid
+	if(!(node->year>0) || !(node->copies>0)){       // Check if year and copies are valid
 		printf("Sorry, you attempted to add an invalid book, please try again.\n");
 		return 1;
 	}
@@ -317,8 +317,16 @@ int remove_book(Book book){
 				printf("Some of the books are being borrowed. Please try again after they are all returned.\n");
 				return 1;
 			}
-			w->next = r->next;
-			c->next = d->next;
+			if(r->next == NULL){
+				end = w;
+				end->next = NULL;
+				e = c;
+				e->next = NULL;
+			}
+			else{
+				w->next = r->next;
+				c->next = d->next;
+			}
 			booklist->length--;
 			k = 0;
 			c = h;

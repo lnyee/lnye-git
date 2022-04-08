@@ -27,8 +27,8 @@ int load_users(FILE *file)                           // Load user information fr
 		}
 		node->id = len;
 		fscanf(file, "\n");
-		unode->username = (char*)malloc(len);
-		fgets (unode->username, len+1, file);
+		unode->username = (char*)malloc(len+1);
+		fscanf(file, "%[^\n]", unode->username);
 		if(strlen(unode->username) != len){
 			printf("The user file is corrupt.\n");
 			exit(1);
@@ -43,8 +43,8 @@ int load_users(FILE *file)                           // Load user information fr
 		}
 		node->id = len;
 		fscanf(file, "\n");
-		unode->password = (char*)malloc(len);
-		fgets (unode->password, len+1, file);
+		unode->password = (char*)malloc(len+1);
+		fscanf(file, "%[^\n]", unode->password);
 		if(strlen(unode->password) != len){
 			printf("The user file is corrupt.\n");
 			exit(1);

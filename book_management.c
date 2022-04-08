@@ -66,12 +66,13 @@ int load_books(FILE *file)
 		}
 		fscanf(file, "\n");
 		// 2. Apply space and load title
-		node->title = (char*)malloc(len);
-		fgets (node->title, len+1, file);
+		node->title = (char*)malloc(len+1);
+		fscanf(file, "%[^\n]", node->title);
 		if(strlen(node->title) != len){
-			printf("The user file is corrupt.\n");
+			printf("The book file is corrupt.\n");
 			exit(1);
 		}
+		len = 0;
 		fscanf(file, "\n");
 
 		// load book author
@@ -84,10 +85,10 @@ int load_books(FILE *file)
 		}
 		fscanf(file, "\n");
 		// 2. Apply space and load author
-		node->authors = (char*)malloc(len);
-		fgets (node->authors, len+1, file);
+		node->authors = (char*)malloc(len+1);
+		fscanf(file, "%[^\n]", node->authors);
 		if(strlen(node->authors) != len){
-			printf("The user file is corrupt.\n");
+			printf("The book file is corrupt.\n");
 			exit(1);
 		}
 		fscanf(file, "\n");
@@ -130,7 +131,7 @@ int showbooks(){   //Format: ID  title  authors  year  copies
 	Book *show;
 	show = (Book*)malloc(sizeof(Book));
 	show = head;
-	for(int i = 0;i<booklist->length;i++){
+	while(show->next != NULL){
 		show = show->next;
 		if(show->copies != 0){
 			printf("%-3d\t%-45s\t%-20s\t%-4d\t%-6d\n", show->id, show->title, show->authors, show->year, show->copies);
@@ -324,8 +325,8 @@ int remove_book(Book book){
 				e->next = NULL;
 			}
 			else{
-				w->next = r->next;
-				c->next = d->next;
+			w->next = r->next;
+			c->next = d->next;
 			}
 			booklist->length--;
 			k = 0;

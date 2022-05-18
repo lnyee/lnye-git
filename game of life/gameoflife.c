@@ -42,3 +42,23 @@ void drawscreen(){
 
     SDL_RenderPresent(renderer);
 }
+
+void drawlife(int cells[256][256]){
+    for (int i=0;i<y;i++){
+        for (int j=0;j<x;j++)
+        {
+            if(cells[i][j] == 1){
+                SDL_SetRenderDrawColor(renderer,0, 0, 0, 255);
+                SDL_Rect redrect = {(800/x)*j, (800/y)*i, (800/x), (800/y)};
+                SDL_RenderFillRect(renderer, &redrect);
+                SDL_RenderPresent(renderer);
+            }
+        }
+    }
+}
+
+void destroy(){
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+}

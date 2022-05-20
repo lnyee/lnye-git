@@ -136,6 +136,25 @@ bool gameover(int cells[256][256], int newcells[256][256]){
     return false;
 }
 
+void store(FILE *file, int initcells[256][256], int cells[256][256]){
+    fprintf(file, "%d\n", x); 
+    fprintf(file, "%d\n", y); 
+    fprintf(file, "\n"); 
+    for(int i=0; i<y; i++){
+        for(int j=0; j<x; j++){
+            fprintf(file, "%d ", initcells[i][j]); 
+        }
+        fprintf(file, "\n"); 
+    }
+    fprintf(file, "\n"); 
+    for(int i=0; i<y; i++){
+        for(int j=0; j<x; j++){
+            fprintf(file, "%d ", cells[i][j]); 
+        }
+        fprintf(file, "\n"); 
+    }
+}
+
 void destroy(){
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);

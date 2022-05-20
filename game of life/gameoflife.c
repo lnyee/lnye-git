@@ -117,6 +117,25 @@ void update(int cells[256][256], int newcells[256][256]){
         }
     }
 }
+
+bool gameover(int cells[256][256], int newcells[256][256]){
+    int num = 0;
+    for (int i=0;i<y;i++){
+        for (int j=0;j<x;j++)
+        {
+            if(cells[i][j] == newcells[i][j]){
+                num++;
+            }
+            cells[i][j] = newcells[i][j];
+            newcells[i][j] = 0;
+        }
+    }
+    if(num == x*y){
+        return true;
+    }
+    return false;
+}
+
 void destroy(){
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);

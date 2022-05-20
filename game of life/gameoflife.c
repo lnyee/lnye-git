@@ -57,6 +57,66 @@ void drawlife(int cells[256][256]){
     }
 }
 
+void update(int cells[256][256], int newcells[256][256]){
+    for (int i=0;i<y;i++){
+        for (int j=0;j<x;j++)
+        {
+            int num = 0;
+            if(i>0 && i<y-1 && j>0 && j<x-1){
+                num = cells[i-1][j-1]+cells[i-1][j]+cells[i-1][j+1]+cells[i][j-1]+cells[i][j+1]+cells[i+1][j-1]+cells[i+1][j]+cells[i+1][j+1];
+            }
+
+            else if(i == y-1){
+                if(j == 0){
+                    num = cells[i-1][j]+cells[i-1][j+1]+cells[i][j+1];
+                }
+                else if(j == x-1){
+                    num = cells[i-1][j-1]+cells[i-1][j]+cells[i][j-1];
+                }
+                else{
+                    num = cells[i-1][j-1]+cells[i-1][j]+cells[i-1][j+1]+cells[i][j-1]+cells[i][j+1];
+                }
+            }
+
+            else if(i == 0){
+                if(j == 0){
+                    num = cells[i][j+1]+cells[i+1][j]+cells[i+1][j+1];
+                }
+                else if(j == x-1){
+                    num = cells[i][j-1]+cells[i+1][j-1]+cells[i+1][j];
+                }
+                else{
+                    num = cells[i][j-1]+cells[i][j+1]+cells[i+1][j-1]+cells[i+1][j]+cells[i+1][j+1];
+                }
+            }
+
+            else if(j == 0){
+                num = cells[i-1][j]+cells[i-1][j+1]+cells[i][j+1]+cells[i+1][j]+cells[i+1][j+1];
+            }
+
+            else if(j == x-1){
+                num = cells[i-1][j-1]+cells[i-1][j]+cells[i][j-1]+cells[i+1][j-1]+cells[i+1][j];
+            }
+
+            if(cells[i][j] == 1){
+                if(num == 2 || num == 3){
+                    newcells[i][j] = 1;
+                }
+                else{
+                    newcells[i][j] = 0;
+                }
+            }
+            else if(cells[i][j] == 0){
+                if(num == 3){
+                    newcells[i][j] = 1;
+                }
+                else{
+                    newcells[i][j] = 0;
+                }
+            }
+        }
+    }
+}
 void destroy(){
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);

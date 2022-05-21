@@ -1,9 +1,12 @@
 int x, y;
 
-void init(FILE *file, int initcells[256][256], int cells[256][256]);
-void drawscreen();
-void drawlife(int cells[256][256]);
-void update(int cells[256][256], int newcells[256][256]);
-bool gameover(int cells[256][256], int newcells[256][256]);
-void store(FILE *file, int initcells[256][256], int cells[256][256]);
+int init(int way);
+void drawscreen(int way);
+int fileinit(FILE *file, int **initcells, int **cells);
+int drawplay(int way);
+int clickinit(int **initcells, int **cells);
+void drawlife(int **cells);
+void update(int **cells, int **newcells);
+int gameover(int **cells, int **newcells, int **newnewcells);
+void store(FILE *file, int **initcells, int **cells);
 void destroy();

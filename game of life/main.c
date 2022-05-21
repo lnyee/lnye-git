@@ -16,6 +16,7 @@ int main(int argc, char *argv[]){
     scanf("%d", &way);
 
     char File[40];
+    int x, y;
     strcpy(File, argv[1]);
     FILE *file = fopen(File, "r");
     if (file == NULL)
@@ -30,7 +31,7 @@ int main(int argc, char *argv[]){
     if(init(way) == -1){
         return -1;
     }
-    drawscreen(way);
+    drawscreen(way, x, y);
     drawplay(way);
     // SDL_Delay(500);
 
@@ -47,16 +48,16 @@ int main(int argc, char *argv[]){
     }
 
     if(way == 1){
-        if(fileinit(file, p, c) == -1){
+        if(fileinit(file, p, c, x, y) == -1){
             return -1;
         }
         fclose(file);
 
-        drawlife(c);
+        drawlife(c, x, y);
         SDL_Delay(500);
     }
     if(way == 2){
-        if(clickinit(p, c) == -1)
+        if(clickinit(p, c, x, y) == -1)
             return -1;
         SDL_Delay(500);
     }
@@ -80,11 +81,11 @@ int main(int argc, char *argv[]){
             if(flag){
                 break;
             }
-            update(c, n);
-            int over = gameover(c, n, nn);
+            update(c, n, x, y);
+            int over = gameover(c, n, nn, x, y);
             if(over == 0 || over == 2){
-                drawscreen(way);
-                drawlife(c);
+                drawscreen(way, x, y);
+                drawlife(c, x, y);
                 t++;
                 SDL_Delay(500);
                 if(over == 2){
@@ -118,11 +119,11 @@ int main(int argc, char *argv[]){
             if(flag){
                 break;
             }
-            update(c, n);
-            int over = gameover(c, n, nn);
+            update(c, n, x, y);
+            int over = gameover(c, n, nn, x, y);
             if(over == 0 || over == 2){
-                drawscreen(way);
-                drawlife(c);
+                drawscreen(way, x, y);
+                drawlife(c, x, y);
                 t++;
                 SDL_Delay(500);
                 if(over == 2){
@@ -149,7 +150,7 @@ int main(int argc, char *argv[]){
     }
 
     FILE *wfile = fopen(File, "w");
-    store(wfile, p, c);
+    store(wfile, p, c, x, y);
     fclose(wfile);
 
     destroy();

@@ -1,34 +1,19 @@
+all : gameoflife test
+.PHONY : clean
 
-# code details
+gameoflife: gameoflife.o main.o
+	cc -lSDL2 -lSDL2_image -o gameoflife gameoflife.o main.o
+ 
+test : gameoflife.o test.o
+	cc -lSDL2 -lSDL2_image -lcunit -o test gameoflife.o test.o
+ 
+gameoflife.o : gameoflife.h function.h
 
-EXE = ./gameoflife
-SRC= gameoflife.c main.c
-
-# generic build details
-
-CC =     gcc
-CFLAGS = -Wall -O
-LIBS =   -lSDL2 -lSDL2_image
-
-# compile to  object code
-
-OBJ= $(SRC:.c=.o)
-
-.c.o:
-	$(CC) $(CFLAGS) -c -o $@ $< 
-
-# build executable
-
-$(EXE): $(OBJ)
-	$(CC) $(OBJ) -o $(EXE) $(LIBS)
-
-# clean up compilation
-
-clean:
-	rm -f $(OBJ) $(EXE)
-
-# dependencies
-
-try.o: gameoflife.c gameoflife.h function.h
-main.o: main.c function.h
-
+main.o : function.h
+ 
+test.o : function.h
+ 
+clean : 
+	rm    gameoflife 
+	rm    test
+	rm    *.o

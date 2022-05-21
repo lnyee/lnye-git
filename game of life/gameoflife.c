@@ -3,7 +3,6 @@
 #include <SDL2/SDL.h>
 #include"gameoflife.h"
 #include"function.h"
-
 int init(int way){
     if(way!=1 && way!=2){
         printf("Please enter the correct number.\n");
@@ -37,13 +36,10 @@ int init(int way){
     }
     return 0;
 }
-
-void drawscreen(int way){
+void drawscreen(int way, int x, int y){
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderClear(renderer); 
-
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-
     for(int i=1; i<x; i++){
         SDL_RenderDrawLine(renderer, (800/x)*i, 0, (800/x)*i, 800);
     }
@@ -53,11 +49,9 @@ void drawscreen(int way){
     if(way == 2){
         SDL_RenderDrawLine(renderer, 0, 800, 800, 800);
     }
-
     SDL_RenderPresent(renderer);
 }
-
-int fileinit(FILE *file, int **initcells, int **cells){
+int fileinit(FILE *file, int **initcells, int **cells, int x, int y){
     if(file == NULL || initcells == NULL || cells == NULL){
         return -1;
     }
@@ -70,7 +64,6 @@ int fileinit(FILE *file, int **initcells, int **cells){
     }
     return 0;
 }
-
 int drawplay(int way){
     if(way == 1){
         return 0;
@@ -83,8 +76,7 @@ int drawplay(int way){
     }
     return -1;
 }
-
-int clickinit(int **initcells, int **cells){
+int clickinit(int **initcells, int **cells, int x, int y){
     for(int i=0; i<y; i++){
         for(int j=0; j<x; j++){
             cells[i][j] = 0;
@@ -93,7 +85,6 @@ int clickinit(int **initcells, int **cells){
     }
     while(1){
         SDL_Event event;
-
         while(SDL_PollEvent(&event)){
             if(event.type == SDL_QUIT)
                 return -1;
@@ -126,8 +117,7 @@ int clickinit(int **initcells, int **cells){
         }
     }
 }
-
-void drawlife(int **cells){
+void drawlife(int **cells, int x, int y){
     for (int i=0;i<y;i++){
         for (int j=0;j<x;j++)
         {
@@ -140,8 +130,7 @@ void drawlife(int **cells){
         }
     }
 }
-
-void update(int **cells, int **newcells){
+void update(int **cells, int **newcells, int x, int y){
     for (int i=0;i<y;i++){
         for (int j=0;j<x;j++)
         {
@@ -149,7 +138,6 @@ void update(int **cells, int **newcells){
             if(i>0 && i<y-1 && j>0 && j<x-1){
                 num = cells[i-1][j-1]+cells[i-1][j]+cells[i-1][j+1]+cells[i][j-1]+cells[i][j+1]+cells[i+1][j-1]+cells[i+1][j]+cells[i+1][j+1];
             }
-
             else if(i == y-1){
                 if(j == 0){
                     num = cells[i-1][j]+cells[i-1][j+1]+cells[i][j+1];
@@ -161,7 +149,6 @@ void update(int **cells, int **newcells){
                     num = cells[i-1][j-1]+cells[i-1][j]+cells[i-1][j+1]+cells[i][j-1]+cells[i][j+1];
                 }
             }
-
             else if(i == 0){
                 if(j == 0){
                     num = cells[i][j+1]+cells[i+1][j]+cells[i+1][j+1];
@@ -173,15 +160,12 @@ void update(int **cells, int **newcells){
                     num = cells[i][j-1]+cells[i][j+1]+cells[i+1][j-1]+cells[i+1][j]+cells[i+1][j+1];
                 }
             }
-
             else if(j == 0){
                 num = cells[i-1][j]+cells[i-1][j+1]+cells[i][j+1]+cells[i+1][j]+cells[i+1][j+1];
             }
-
             else if(j == x-1){
                 num = cells[i-1][j-1]+cells[i-1][j]+cells[i][j-1]+cells[i+1][j-1]+cells[i+1][j];
             }
-
             if(cells[i][j] == 1){
                 if(num == 2 || num == 3){
                     newcells[i][j] = 1;
@@ -201,10 +185,9 @@ void update(int **cells, int **newcells){
         }
     }
 }
-
-int gameover(int **cells, int **newcells, int **newnewcells){
+int gameover(int **cells, int **newcells, int **newnewcells, int x, int y){
     int num = 0, n = 0;
-    update(newcells, newnewcells);
+    update(newcells, newnewcells, x, y);
     for (int i=0;i<y;i++){
         for (int j=0;j<x;j++)
         {
@@ -226,8 +209,7 @@ int gameover(int **cells, int **newcells, int **newnewcells){
     }
     return 0;
 }
-
-void store(FILE *file, int **initcells, int **cells){
+void store(FILE *file, int **initcells, int **cells, int x, int y){
     fprintf(file, "%d\n", x); 
     fprintf(file, "%d\n", y); 
     fprintf(file, "\n"); 
@@ -245,7 +227,6 @@ void store(FILE *file, int **initcells, int **cells){
         fprintf(file, "\n"); 
     }
 }
-
 void destroy(){
     SDL_DestroyTexture(texture);
     SDL_DestroyRenderer(renderer);

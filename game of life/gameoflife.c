@@ -5,6 +5,10 @@
 #include"function.h"
 
 int init(int way){
+    if(way!=1 && way!=2){
+        printf("Please enter the correct number.\n");
+        return -1;
+    }
     image = SDL_LoadBMP("play.bmp");
     if(!image){
         printf("Unable to open picture: %s\n", SDL_GetError());

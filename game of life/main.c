@@ -139,7 +139,7 @@ int main(int argc, char *argv[]){
             if(t == times && flag == 0){
                 printf("Iterated %d times\n", times);
             }
-            if(t != times && flag == 1){
+            else if(t != times && flag == 1){
                 printf("You closed the window, iterated %d times\n", t);
             }
             else{
